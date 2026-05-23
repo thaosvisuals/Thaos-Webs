@@ -9,6 +9,72 @@
     (typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4) ||
     Boolean(networkInfo && networkInfo.saveData);
 
+  const setupLenisSmoothScroll = () => {
+    if (typeof window.Lenis !== "function" || !document.querySelector(".page-shell")) {
+      return;
+    }
+
+    let lenis = null;
+    let lenisRaf = 0;
+
+    const start = () => {
+      if (lenis || reduceMotionQuery.matches) {
+        return;
+      }
+
+      lenis = new window.Lenis({
+        duration: 1.05,
+        smoothWheel: true,
+        syncTouch: false,
+        wheelMultiplier: 0.92,
+        anchors: true,
+        allowNestedScroll: true,
+        stopInertiaOnNavigate: true,
+      });
+      window.__thaosLenis = lenis;
+
+      const raf = (time) => {
+        if (!lenis) {
+          return;
+        }
+        lenis.raf(time);
+        lenisRaf = window.requestAnimationFrame(raf);
+      };
+
+      lenisRaf = window.requestAnimationFrame(raf);
+    };
+
+    const stop = () => {
+      if (lenisRaf) {
+        window.cancelAnimationFrame(lenisRaf);
+        lenisRaf = 0;
+      }
+      if (lenis) {
+        lenis.destroy();
+        lenis = null;
+        delete window.__thaosLenis;
+      }
+    };
+
+    const syncMotionPreference = () => {
+      if (reduceMotionQuery.matches) {
+        stop();
+      } else {
+        start();
+      }
+    };
+
+    if (typeof reduceMotionQuery.addEventListener === "function") {
+      reduceMotionQuery.addEventListener("change", syncMotionPreference);
+    } else if (typeof reduceMotionQuery.addListener === "function") {
+      reduceMotionQuery.addListener(syncMotionPreference);
+    }
+
+    start();
+  };
+
+  setupLenisSmoothScroll();
+
   const fadeTargets = Array.from(
     document.querySelectorAll(".editorial-plate, .colophon")
   );

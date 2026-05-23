@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://thaosvisuals.github.io/Thaos-Webs/sitemap.xml
+Sitemap: https://thaoswebs.com/sitemap.xml

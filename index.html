@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>†HΛOS Web</title>
     <meta name="description" content="Diseño y desarrollo de páginas web estáticas personalizadas.">
+    <style>html,body{background:#050504;overflow-x:hidden;}</style>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -36,7 +37,8 @@
 
       html {
         min-height: 100%;
-        background: var(--charcoal);
+        background: #050504;
+        overflow-x: hidden;
       }
 
       body {
@@ -49,6 +51,8 @@
           radial-gradient(circle at 50% 16%, rgba(184, 154, 91, 0.075), transparent 29rem),
           radial-gradient(circle at 16% 82%, rgba(82, 47, 24, 0.16), transparent 30rem),
           linear-gradient(145deg, var(--charcoal-deep), var(--charcoal) 52%, var(--charcoal-soft));
+        background-color: #050504;
+        overflow-x: hidden;
       }
 
       body::before {
@@ -106,12 +110,14 @@
 
       h1 {
         margin: 0;
+        max-width: 100%;
         font-family: var(--font-main);
         font-size: clamp(3.45rem, 12vw, 8.2rem);
         font-weight: 500;
         line-height: 0.96;
         letter-spacing: 0;
         color: var(--bone);
+        overflow-wrap: break-word;
         text-shadow: 0 18px 42px rgba(0, 0, 0, 0.52), 0 0 24px rgba(184, 154, 91, 0.08);
       }
 
@@ -244,6 +250,8 @@
 
         h1 {
           font-size: clamp(3.1rem, 18vw, 4.65rem);
+          line-height: 0.92;
+          letter-spacing: -0.01em;
         }
 
         .entry-subtitle {
