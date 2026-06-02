@@ -102,10 +102,23 @@
     ".animate",
     ".animated",
     ".animate-on-scroll",
+    ".in-view",
+    ".is-visible",
+    ".visible",
+    ".show",
     "[data-animate]",
     "[data-reveal]",
     "[data-scroll]",
     "[data-scroll-reveal]",
+    "section",
+    "article",
+    ".editorial-plate",
+    ".colophon",
+    ".card",
+    ".experiment-card",
+    ".gallery-item",
+    ".project-card",
+    ".service-card",
   ].join(", ");
 
   const getMobileRevealTargets = () =>
@@ -118,12 +131,15 @@
       forcedRevealElements.add(element);
       element.classList.add("is-visible");
       element.style.opacity = "1";
+      element.style.visibility = "visible";
       element.style.transform = "none";
       element.style.translate = "none";
       element.style.scale = "1";
       element.style.filter = "none";
       element.style.animation = "none";
       element.style.transition = "none";
+      element.style.transitionProperty = "none";
+      element.style.transitionDuration = "0s";
       element.style.animationDelay = "0s";
       element.style.transitionDelay = "0s";
     });
@@ -132,12 +148,15 @@
   const clearForcedRevealStyles = () => {
     forcedRevealElements.forEach((element) => {
       element.style.removeProperty("opacity");
+      element.style.removeProperty("visibility");
       element.style.removeProperty("transform");
       element.style.removeProperty("translate");
       element.style.removeProperty("scale");
       element.style.removeProperty("filter");
       element.style.removeProperty("animation");
       element.style.removeProperty("transition");
+      element.style.removeProperty("transition-property");
+      element.style.removeProperty("transition-duration");
       element.style.removeProperty("animation-delay");
       element.style.removeProperty("transition-delay");
     });
@@ -597,9 +616,13 @@
     }
 
     let progressRaf = 0;
+    let isProgressEnabled = false;
 
     const updateProgress = () => {
       progressRaf = 0;
+      if (!isProgressEnabled || isMobileRevealViewport()) {
+        return;
+      }
       const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollRange > 0 ? window.scrollY / scrollRange : 0;
       const normalized = Math.max(0, Math.min(1, progress));
@@ -612,9 +635,50 @@
       }
     };
 
-    window.addEventListener("scroll", requestProgressUpdate, { passive: true });
-    window.addEventListener("resize", requestProgressUpdate, { passive: true });
-    requestProgressUpdate();
+    const disableProgress = () => {
+      if (!isProgressEnabled) {
+        progressBar.style.transform = "none";
+        return;
+      }
+
+      isProgressEnabled = false;
+      window.removeEventListener("scroll", requestProgressUpdate);
+      window.removeEventListener("resize", requestProgressUpdate);
+
+      if (progressRaf) {
+        window.cancelAnimationFrame(progressRaf);
+        progressRaf = 0;
+      }
+
+      progressBar.style.transform = "none";
+    };
+
+    const enableProgress = () => {
+      if (isProgressEnabled) {
+        return;
+      }
+
+      isProgressEnabled = true;
+      window.addEventListener("scroll", requestProgressUpdate, { passive: true });
+      window.addEventListener("resize", requestProgressUpdate, { passive: true });
+      requestProgressUpdate();
+    };
+
+    const syncProgressMode = () => {
+      if (isMobileRevealViewport()) {
+        disableProgress();
+      } else {
+        enableProgress();
+      }
+    };
+
+    if (typeof mobileRevealQuery.addEventListener === "function") {
+      mobileRevealQuery.addEventListener("change", syncProgressMode);
+    } else if (typeof mobileRevealQuery.addListener === "function") {
+      mobileRevealQuery.addListener(syncProgressMode);
+    }
+
+    syncProgressMode();
   };
 
   setupScrollProgress();

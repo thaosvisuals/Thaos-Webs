@@ -3874,3 +3874,70 @@ a:focus-visible {
     text-align: center;
   }
 }
+
+@media (max-width: 768px) {
+  .temporal-fade,
+  body.temporal-ready .temporal-fade,
+  body.temporal-ready .temporal-fade.is-visible,
+  .reveal,
+  .reveal-on-scroll,
+  .scroll-reveal,
+  .fade-in,
+  .fade-up,
+  .fade-down,
+  .slide-up,
+  .slide-in,
+  .animate,
+  .animated,
+  .animate-on-scroll,
+  .in-view,
+  .is-visible,
+  .visible,
+  .show,
+  [data-animate],
+  [data-reveal],
+  [data-scroll],
+  [data-scroll-reveal],
+  section,
+  article,
+  .editorial-plate,
+  .colophon,
+  .card,
+  .experiment-card,
+  .gallery-item,
+  .project-card,
+  .service-card {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    filter: none !important;
+    animation: none !important;
+    transition: none !important;
+    transition-property: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    animation-delay: 0s !important;
+  }
+
+  .scroll-progress,
+  .reading-progress,
+  .progress-bar,
+  .progress-line,
+  .page-progress,
+  .scroll-indicator,
+  .progress,
+  #scroll-progress,
+  #reading-progress,
+  #progress,
+  #progress-bar,
+  [data-scroll-progress] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
