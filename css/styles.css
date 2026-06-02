@@ -209,6 +209,47 @@ body.temporal-ready .temporal-fade.is-visible {
   filter: blur(0);
 }
 
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .temporal-fade,
+  body.temporal-ready .temporal-fade,
+  body.temporal-ready .temporal-fade.is-visible,
+  .reveal,
+  .reveal-on-scroll,
+  .scroll-reveal,
+  .fade-in,
+  .fade-up,
+  .fade-down,
+  .slide-up,
+  .slide-in,
+  .animate,
+  .animated,
+  .animate-on-scroll,
+  .in-view,
+  .is-visible,
+  .visible,
+  .show,
+  .active,
+  [data-animate],
+  [data-reveal],
+  [data-scroll],
+  [data-scroll-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+    filter: none !important;
+    will-change: auto !important;
+    animation: none !important;
+    transition: none !important;
+    transition-delay: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
 a {
   color: inherit;
 }

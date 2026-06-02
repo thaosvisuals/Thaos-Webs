@@ -1,6 +1,7 @@
 (() => {
   const body = document.body;
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mobileRevealQuery = window.matchMedia("(max-width: 768px)");
   const desktopQuery = window.matchMedia("(min-width: 901px)");
   const finePointerQuery = window.matchMedia("(pointer: fine)");
   const networkInfo = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -8,6 +9,7 @@
     (typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency <= 4) ||
     (typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4) ||
     Boolean(networkInfo && networkInfo.saveData);
+  const isMobileRevealViewport = () => mobileRevealQuery.matches;
 
   const setupLenisSmoothScroll = () => {
     if (typeof window.Lenis !== "function" || !document.querySelector(".page-shell")) {
@@ -17,8 +19,16 @@
     let lenis = null;
     let lenisRaf = 0;
 
+    const addScrollQueryListener = (query, listener) => {
+      if (typeof query.addEventListener === "function") {
+        query.addEventListener("change", listener);
+      } else if (typeof query.addListener === "function") {
+        query.addListener(listener);
+      }
+    };
+
     const start = () => {
-      if (lenis || reduceMotionQuery.matches) {
+      if (lenis || reduceMotionQuery.matches || isMobileRevealViewport()) {
         return;
       }
 
@@ -56,21 +66,18 @@
       }
     };
 
-    const syncMotionPreference = () => {
-      if (reduceMotionQuery.matches) {
+    const syncScrollMode = () => {
+      if (reduceMotionQuery.matches || isMobileRevealViewport()) {
         stop();
       } else {
         start();
       }
     };
 
-    if (typeof reduceMotionQuery.addEventListener === "function") {
-      reduceMotionQuery.addEventListener("change", syncMotionPreference);
-    } else if (typeof reduceMotionQuery.addListener === "function") {
-      reduceMotionQuery.addListener(syncMotionPreference);
-    }
+    addScrollQueryListener(reduceMotionQuery, syncScrollMode);
+    addScrollQueryListener(mobileRevealQuery, syncScrollMode);
 
-    start();
+    syncScrollMode();
   };
 
   setupLenisSmoothScroll();
@@ -81,6 +88,61 @@
   fadeTargets.forEach((element) => element.classList.add("temporal-fade"));
 
   body.classList.add("temporal-ready");
+
+  const mobileRevealSelector = [
+    ".temporal-fade",
+    ".reveal",
+    ".reveal-on-scroll",
+    ".scroll-reveal",
+    ".fade-in",
+    ".fade-up",
+    ".fade-down",
+    ".slide-up",
+    ".slide-in",
+    ".animate",
+    ".animated",
+    ".animate-on-scroll",
+    "[data-animate]",
+    "[data-reveal]",
+    "[data-scroll]",
+    "[data-scroll-reveal]",
+  ].join(", ");
+
+  const getMobileRevealTargets = () =>
+    Array.from(new Set([...fadeTargets, ...document.querySelectorAll(mobileRevealSelector)]));
+
+  const forcedRevealElements = new Set();
+
+  const forceRevealVisible = () => {
+    getMobileRevealTargets().forEach((element) => {
+      forcedRevealElements.add(element);
+      element.classList.add("is-visible");
+      element.style.opacity = "1";
+      element.style.transform = "none";
+      element.style.translate = "none";
+      element.style.scale = "1";
+      element.style.filter = "none";
+      element.style.animation = "none";
+      element.style.transition = "none";
+      element.style.animationDelay = "0s";
+      element.style.transitionDelay = "0s";
+    });
+  };
+
+  const clearForcedRevealStyles = () => {
+    forcedRevealElements.forEach((element) => {
+      element.style.removeProperty("opacity");
+      element.style.removeProperty("transform");
+      element.style.removeProperty("translate");
+      element.style.removeProperty("scale");
+      element.style.removeProperty("filter");
+      element.style.removeProperty("animation");
+      element.style.removeProperty("transition");
+      element.style.removeProperty("animation-delay");
+      element.style.removeProperty("transition-delay");
+    });
+    forcedRevealElements.clear();
+  };
 
   const setupProjectLinks = () => {
     const projectLinks = Array.from(document.querySelectorAll(".gallery-link"));
@@ -119,7 +181,7 @@
       titleFocus.classList.add("is-underlined");
     };
 
-    if (reduceMotionQuery.matches) {
+    if (reduceMotionQuery.matches || isMobileRevealViewport()) {
       hasPlayed = true;
       revealUnderline();
       return;
@@ -146,7 +208,7 @@
     titleObserver.observe(gallerySection);
 
     const handleMotionPreferenceChange = () => {
-      if (!hasPlayed && reduceMotionQuery.matches) {
+      if (!hasPlayed && (reduceMotionQuery.matches || isMobileRevealViewport())) {
         hasPlayed = true;
         revealUnderline();
         titleObserver.disconnect();
@@ -157,6 +219,12 @@
       reduceMotionQuery.addEventListener("change", handleMotionPreferenceChange);
     } else if (typeof reduceMotionQuery.addListener === "function") {
       reduceMotionQuery.addListener(handleMotionPreferenceChange);
+    }
+
+    if (typeof mobileRevealQuery.addEventListener === "function") {
+      mobileRevealQuery.addEventListener("change", handleMotionPreferenceChange);
+    } else if (typeof mobileRevealQuery.addListener === "function") {
+      mobileRevealQuery.addListener(handleMotionPreferenceChange);
     }
   };
 
@@ -855,21 +923,59 @@
 
   setupHeroManifestoCardInteraction();
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle("is-visible", entry.isIntersecting);
-      });
-    },
-    {
-      threshold: 0.18,
-      rootMargin: "-8% 0% -8% 0%",
+  let temporalFadeObserver = null;
+
+  const stopTemporalReveal = () => {
+    if (temporalFadeObserver) {
+      temporalFadeObserver.disconnect();
+      temporalFadeObserver = null;
     }
-  );
-  fadeTargets.forEach((element) => observer.observe(element));
+  };
+
+  const startTemporalReveal = () => {
+    if (temporalFadeObserver || !fadeTargets.length) {
+      return;
+    }
+
+    temporalFadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle("is-visible", entry.isIntersecting);
+        });
+      },
+      {
+        threshold: 0.18,
+        rootMargin: "-8% 0% -8% 0%",
+      }
+    );
+
+    fadeTargets.forEach((element) => temporalFadeObserver.observe(element));
+  };
+
+  const syncTemporalReveal = () => {
+    if (reduceMotionQuery.matches || isMobileRevealViewport() || !("IntersectionObserver" in window)) {
+      stopTemporalReveal();
+      forceRevealVisible();
+      return;
+    }
+
+    clearForcedRevealStyles();
+    startTemporalReveal();
+  };
+
+  const addRevealQueryListener = (query, listener) => {
+    if (typeof query.addEventListener === "function") {
+      query.addEventListener("change", listener);
+    } else if (typeof query.addListener === "function") {
+      query.addListener(listener);
+    }
+  };
+
+  addRevealQueryListener(reduceMotionQuery, syncTemporalReveal);
+  addRevealQueryListener(mobileRevealQuery, syncTemporalReveal);
+  syncTemporalReveal();
 
   if (reduceMotionQuery.matches) {
-    fadeTargets.forEach((element) => element.classList.add("is-visible"));
     return;
   }
 
