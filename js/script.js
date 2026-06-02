@@ -797,8 +797,8 @@
   setupSubtleCursor();
 
   const setupHeroManifestoCardInteraction = () => {
-    const heroPlate = document.querySelector(".plate-image-hero");
-    const manifestoCard = heroPlate ? heroPlate.querySelector(".plate-image-caption") : null;
+    const manifestoCard = document.querySelector(".plate-image-caption.card");
+    const heroPlate = manifestoCard ? manifestoCard.closest(".plate-image") : null;
     if (!heroPlate || !manifestoCard) {
       return;
     }
@@ -898,6 +898,7 @@
         const tiltY = clamp(normalizedX * touchTiltMax, -touchTiltMax, touchTiltMax);
 
         heroPlate.classList.add("is-card-touch-active");
+        manifestoCard.classList.add("is-pressed");
         manifestoCard.style.setProperty("--hero-card-touch-tilt-x", `${tiltX.toFixed(2)}deg`);
         manifestoCard.style.setProperty("--hero-card-touch-tilt-y", `${tiltY.toFixed(2)}deg`);
 
@@ -907,6 +908,7 @@
 
         touchResetTimeout = window.setTimeout(() => {
           heroPlate.classList.remove("is-card-touch-active");
+          manifestoCard.classList.remove("is-pressed");
           manifestoCard.style.setProperty("--hero-card-touch-tilt-x", "0deg");
           manifestoCard.style.setProperty("--hero-card-touch-tilt-y", "0deg");
         }, 340);
@@ -963,6 +965,7 @@
       if (reduceMotionQuery.matches) {
         resetInteraction();
         heroPlate.classList.remove("is-card-touch-active");
+        manifestoCard.classList.remove("is-pressed");
         manifestoCard.classList.remove("is-ripple-active");
         manifestoCard.style.setProperty("--hero-card-touch-tilt-x", "0deg");
         manifestoCard.style.setProperty("--hero-card-touch-tilt-y", "0deg");

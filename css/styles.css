@@ -3963,7 +3963,7 @@ a:focus-visible {
   .editorial-plate,
   .plate-quote,
   .plate-image,
-  .plate-image-hero .plate-image-caption,
+  .plate-image-caption.card,
   .faq-item,
   .card,
   .gallery-item,
@@ -3978,8 +3978,8 @@ a:focus-visible {
 
   .plate-image::before,
   .plate-image::after,
-  .plate-image-hero .plate-image-caption::before,
-  .plate-image-hero .plate-image-caption::after,
+  .plate-image-caption.card::before,
+  .plate-image-caption.card::after,
   .gallery-item::before,
   .gallery-item::after {
     background-image: none !important;
@@ -3989,15 +3989,15 @@ a:focus-visible {
     transition: none !important;
   }
 
-  .plate-image-hero .plate-image-caption::before,
-  .plate-image-hero .plate-image-caption::after {
+  .plate-image-caption.card::before,
+  .plate-image-caption.card::after {
     opacity: 0 !important;
   }
 
   .section-frame,
   .plate-quote,
   .plate-image,
-  .plate-image-hero .plate-image-caption,
+  .plate-image-caption.card,
   .faq-item,
   .card,
   .gallery-item,
@@ -4032,7 +4032,7 @@ a:focus-visible {
   }
 
   .plate-image-hero,
-  .plate-image-hero .plate-image-caption,
+  .plate-image-caption.card,
   .card {
     perspective: none !important;
     transform-style: flat !important;
@@ -4113,20 +4113,48 @@ a:focus-visible {
     transition: none !important;
   }
 
-  .plate-image-hero .plate-image-caption {
+  .plate-image-caption.card {
+    --hero-card-depth: 0px;
+    --hero-card-rot-x: 0deg;
+    --hero-card-rot-y: 0deg;
+    --hero-card-scale: 1;
     touch-action: manipulation;
+    transform:
+      perspective(1040px)
+      translate3d(0, var(--hero-card-depth), 0)
+      rotateX(var(--hero-card-rot-x))
+      rotateY(var(--hero-card-rot-y))
+      scale(var(--hero-card-scale)) !important;
+    transform-style: preserve-3d !important;
     transition:
-      transform 160ms ease,
-      border-color 160ms ease,
-      box-shadow 160ms ease,
-      background-color 160ms ease !important;
+      transform 150ms var(--temporal-ease),
+      border-color 150ms var(--temporal-ease),
+      background-color 150ms var(--temporal-ease),
+      box-shadow 150ms var(--temporal-ease),
+      filter 150ms var(--temporal-ease) !important;
   }
 
-  .plate-image-hero .plate-image-caption:active,
-  .plate-image-hero.is-card-touch-active .plate-image-caption {
-    transform: scale(0.985) !important;
-    border-color: rgba(184, 154, 91, 0.75) !important;
-    box-shadow: 0 0 28px rgba(184, 154, 91, 0.14) !important;
+  .plate-image-caption.card:active,
+  .plate-image-caption.card.is-pressed {
+    --hero-card-depth: -0.95px;
+    --hero-card-rot-x: var(--hero-card-touch-tilt-x, 0.22deg);
+    --hero-card-rot-y: var(--hero-card-touch-tilt-y, -0.22deg);
+    --hero-card-scale: 1.006;
+    border-color: rgba(165, 138, 77, 0.46) !important;
+    background-color: rgba(14, 14, 14, 0.86) !important;
+    box-shadow:
+      0 14px 24px rgba(0, 0, 0, 0.32),
+      0 0 0 1px rgba(233, 228, 217, 0.065) !important;
+    filter: contrast(1.02) !important;
+  }
+
+  .plate-image-caption.card:active::after,
+  .plate-image-caption.card.is-pressed::after {
+    opacity: 0.82 !important;
+    border-color: rgba(165, 138, 77, 0.22) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(233, 228, 217, 0.05),
+      0 0 18px rgba(165, 138, 77, 0.09) !important;
   }
 
   .scroll-progress {
