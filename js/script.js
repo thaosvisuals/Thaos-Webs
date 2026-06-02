@@ -620,7 +620,7 @@
 
     const updateProgress = () => {
       progressRaf = 0;
-      if (!isProgressEnabled || isMobileRevealViewport()) {
+      if (!isProgressEnabled) {
         return;
       }
       const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
@@ -665,11 +665,7 @@
     };
 
     const syncProgressMode = () => {
-      if (isMobileRevealViewport()) {
-        disableProgress();
-      } else {
-        enableProgress();
-      }
+      enableProgress();
     };
 
     if (typeof mobileRevealQuery.addEventListener === "function") {

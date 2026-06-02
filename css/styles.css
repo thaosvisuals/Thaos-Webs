@@ -4104,13 +4104,50 @@ a:focus-visible {
   #scroll-progress,
   #reading-progress,
   #progress,
-  #progress-bar,
-  [data-scroll-progress] {
+  #progress-bar {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
     transform: none !important;
     animation: none !important;
     transition: none !important;
+  }
+
+  .plate-image-hero .plate-image-caption {
+    touch-action: manipulation;
+    transition:
+      transform 160ms ease,
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease !important;
+  }
+
+  .plate-image-hero .plate-image-caption:active,
+  .plate-image-hero.is-card-touch-active .plate-image-caption {
+    transform: scale(0.985) !important;
+    border-color: rgba(184, 154, 91, 0.75) !important;
+    box-shadow: 0 0 28px rgba(184, 154, 91, 0.14) !important;
+  }
+
+  .scroll-progress {
+    display: block !important;
+    position: fixed !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    pointer-events: none !important;
+  }
+
+  .scroll-progress-bar,
+  [data-scroll-progress] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+    transform-origin: left center !important;
+    pointer-events: none !important;
   }
 }
