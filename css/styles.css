@@ -3876,6 +3876,40 @@ a:focus-visible {
 }
 
 @media (max-width: 768px) {
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    will-change: auto !important;
+    background-attachment: scroll !important;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    scroll-behavior: auto;
+  }
+
+  body {
+    position: relative;
+  }
+
+  body::before {
+    position: absolute;
+    min-height: 100%;
+    background-image: var(--grain-speckle);
+    background-size: 64px 64px;
+    opacity: 0.12;
+    mix-blend-mode: normal;
+  }
+
+  body::after {
+    display: none;
+  }
+
   .temporal-fade,
   body.temporal-ready .temporal-fade,
   body.temporal-ready .temporal-fade.is-visible,
@@ -3909,6 +3943,7 @@ a:focus-visible {
   .service-card {
     opacity: 1 !important;
     visibility: visible !important;
+    max-width: 100% !important;
     transform: none !important;
     translate: none !important;
     scale: 1 !important;
@@ -3919,6 +3954,144 @@ a:focus-visible {
     transition-duration: 0s !important;
     transition-delay: 0s !important;
     animation-delay: 0s !important;
+    content-visibility: visible !important;
+    contain: none !important;
+    contain-intrinsic-size: auto !important;
+  }
+
+  .section-frame,
+  .editorial-plate,
+  .plate-quote,
+  .plate-image,
+  .plate-image-hero .plate-image-caption,
+  .faq-item,
+  .card,
+  .gallery-item,
+  .experiment-card,
+  .colophon {
+    background-image: linear-gradient(180deg, rgba(184, 154, 91, 0.028), rgba(23, 23, 23, 0.86)) !important;
+    background-size: auto !important;
+    background-repeat: no-repeat !important;
+    mix-blend-mode: normal !important;
+    text-shadow: none !important;
+  }
+
+  .plate-image::before,
+  .plate-image::after,
+  .plate-image-hero .plate-image-caption::before,
+  .plate-image-hero .plate-image-caption::after,
+  .gallery-item::before,
+  .gallery-item::after {
+    background-image: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .plate-image-hero .plate-image-caption::before,
+  .plate-image-hero .plate-image-caption::after {
+    opacity: 0 !important;
+  }
+
+  .section-frame,
+  .plate-quote,
+  .plate-image,
+  .plate-image-hero .plate-image-caption,
+  .faq-item,
+  .card,
+  .gallery-item,
+  .experiment-card,
+  .colophon {
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36) !important;
+  }
+
+  .script-accent,
+  .line-decor,
+  .colophon-ornament,
+  .gallery-glyph,
+  .texture,
+  .grain,
+  .noise,
+  .overlay,
+  .background-texture,
+  .paper-texture,
+  .section-texture {
+    filter: none !important;
+    mix-blend-mode: normal !important;
+  }
+
+  .texture,
+  .grain,
+  .noise,
+  .overlay,
+  .background-texture,
+  .paper-texture,
+  .section-texture {
+    opacity: 0.18 !important;
+  }
+
+  .plate-image-hero,
+  .plate-image-hero .plate-image-caption,
+  .card {
+    perspective: none !important;
+    transform-style: flat !important;
+  }
+
+  .plate-faq,
+  .faq,
+  .faq-section,
+  .faq-grid,
+  .faq-item,
+  .faq-trigger,
+  .faq-panel,
+  .faq-panel-inner {
+    overflow-x: hidden !important;
+    content-visibility: visible !important;
+    contain: none !important;
+  }
+
+  .plate-faq .section-head,
+  .plate-faq .section-head h2,
+  .faq h2,
+  .faq-section h2,
+  #faq-title {
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .plate-faq .section-head h2,
+  .faq h2,
+  .faq-section h2,
+  #faq-title {
+    font-size: clamp(2rem, 10.5vw, 3.2rem);
+    line-height: 0.95;
+    overflow-wrap: normal;
+    word-break: normal;
+    text-wrap: balance;
+  }
+
+  .project-preview,
+  .experiment-preview img,
+  .plate-gallery .project-preview,
+  .project-case-preview img {
+    filter: none !important;
+    transition: none !important;
+    background-attachment: scroll !important;
+  }
+
+  .page-shell,
+  .architectural-grid,
+  .content-column,
+  .hero-grid,
+  .hero-copy,
+  .section-head,
+  .gallery-grid,
+  .faq-grid,
+  .contact-actions,
+  .colophon {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   .scroll-progress,
